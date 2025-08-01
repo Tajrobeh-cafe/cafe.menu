@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منوی کافه تجربه</title>
-    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#8B4513">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -135,6 +134,7 @@
             font-family: 'Vazirmatn', sans-serif;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            margin: 5px;
         }
 
         .mini-game-btn:hover {
@@ -142,8 +142,8 @@
             transform: translateY(-3px);
         }
 
-        /* استایل‌های بازی مار */
-        #gameModal {
+        /* استایل‌های مودال بازی‌ها */
+        .game-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -165,10 +165,13 @@
             width: 90%;
         }
 
-        #gameCanvas {
+        .game-canvas {
             background-color: #f0f0f0;
             border: 2px solid var(--primary-color);
             margin: 10px 0;
+            display: block;
+            width: 100%;
+            max-width: 100%;
         }
 
         .game-header {
@@ -197,6 +200,63 @@
             color: #555;
         }
 
+        /* دکمه‌های لمسی */
+        .touch-controls {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .touch-row {
+            display: flex;
+            justify-content: center;
+            margin: 5px 0;
+        }
+
+        .touch-btn {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            margin: 0 10px;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+
+        /* استایل‌های انتخاب بازی */
+        .game-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .game-option {
+            background-color: var(--card-color);
+            border-radius: 10px;
+            margin: 10px;
+            padding: 15px;
+            width: 120px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .game-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -215,9 +275,23 @@
                 padding: 12px 24px;
                 font-size: 16px;
             }
+
+            .touch-controls {
+                display: block;
+            }
+
+            .game-canvas {
+                max-height: 70vh;
+            }
+
+            .game-option {
+                width: 100px;
+                padding: 10px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <button class="install-btn" id="installButton">نصب اپلیکیشن</button>
@@ -297,6 +371,18 @@
                 </div>
                 <div class="menu-item">
                     <span>جار سه شیر</span>
+                    <span>T140</span>
+                </div>
+                <div class="menu-item">
+                    <span>کروسان کره ای</span>
+                    <span>T80</span>
+                </div>
+                <div class="menu-item">
+                    <span>کروسان بستنی</span>
+                    <span>T110</span>
+                </div>
+                <div class="menu-item">
+                    <span>رول دارچین با فراستینگ پنیر</span>
                     <span>T140</span>
                 </div>
             </div>
@@ -430,21 +516,136 @@
 
         <!-- بخش مینی گیم -->
         <div class="mini-game-container">
-            <button class="mini-game-btn" onclick="openSnakeGame()">مینی گیم</button>
+            <button class="mini-game-btn" onclick="openGameSelection()">مینی گیم‌ها</button>
+        </div>
+    </div>
+
+    <!-- مودال انتخاب بازی -->
+    <div id="gameSelectionModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <h2 style="margin: 0; color: var(--primary-color);">انتخاب بازی</h2>
+                <button class="close-game" onclick="closeModal('gameSelectionModal')">بستن</button>
+            </div>
+            <div class="game-selection">
+                <div class="game-option" onclick="openSnakeGame()">
+                    <div class="game-icon"><i class="fas fa-snake"></i></div>
+                    <div>بازی مار</div>
+                </div>
+                <div class="game-option" onclick="openMemoryGame()">
+                    <div class="game-icon"><i class="fas fa-brain"></i></div>
+                    <div>بازی حافظه</div>
+                </div>
+                <div class="game-option" onclick="openFlappyGame()">
+                    <div class="game-icon"><i class="fas fa-dove"></i></div>
+                    <div>فلپی کافه</div>
+                </div>
+                <div class="game-option" onclick="openDinoGame()">
+                    <div class="game-icon"><i class="fas fa-running"></i></div>
+                    <div>دایناسور</div>
+                </div>
+                <div class="game-option" onclick="openTetrisGame()">
+                    <div class="game-icon"><i class="fas fa-shapes"></i></div>
+                    <div>تتریس</div>
+                </div>
+                <div class="game-option" onclick="openPuzzleGame()">
+                    <div class="game-icon"><i class="fas fa-puzzle-piece"></i></div>
+                    <div>پازل تصویر</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- مودال بازی مار -->
-    <div id="gameModal">
+    <div id="snakeGameModal" class="game-modal">
         <div class="game-container">
             <div class="game-header">
-                <div class="game-score">امتیاز: <span id="score">0</span></div>
-                <button class="close-game" onclick="closeGame()">بستن</button>
+                <div class="game-score">امتیاز: <span id="snakeScore">0</span></div>
+                <button class="close-game" onclick="closeGame('snake')">بستن</button>
             </div>
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <canvas id="snakeCanvas" class="game-canvas"></canvas>
             <div class="game-controls">
-                از کلیدهای جهت‌دار کیبورد برای حرکت استفاده کنید
+                از کلیدهای جهت‌دار کیبورد یا دکمه‌های زیر برای حرکت استفاده کنید
             </div>
+            <!-- دکمه‌های کنترل لمسی -->
+            <div class="touch-controls" id="snakeTouchControls">
+                <div class="touch-row">
+                    <button class="touch-btn" onclick="changeSnakeDirection(0, -1)">↑</button>
+                </div>
+                <div class="touch-row">
+                    <button class="touch-btn" onclick="changeSnakeDirection(-1, 0)">←</button>
+                    <button class="touch-btn" onclick="changeSnakeDirection(1, 0)">→</button>
+                </div>
+                <div class="touch-row">
+                    <button class="touch-btn" onclick="changeSnakeDirection(0, 1)">↓</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال بازی حافظه -->
+    <div id="memoryGameModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-score">امتیاز: <span id="memoryScore">0</span></div>
+                <button class="close-game" onclick="closeGame('memory')">بستن</button>
+            </div>
+            <div id="memoryBoard" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0;"></div>
+            <button class="mini-game-btn" onclick="resetMemoryGame()" style="margin-top: 15px;">شروع مجدد</button>
+        </div>
+    </div>
+
+    <!-- مودال بازی فلپی کافه -->
+    <div id="flappyGameModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-score">امتیاز: <span id="flappyScore">0</span></div>
+                <button class="close-game" onclick="closeGame('flappy')">بستن</button>
+            </div>
+            <canvas id="flappyCanvas" class="game-canvas"></canvas>
+            <div class="game-controls">
+                برای پرش کلیک کنید یا کلید فاصله را فشار دهید
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال بازی دایناسور -->
+    <div id="dinoGameModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-score">امتیاز: <span id="dinoScore">0</span></div>
+                <button class="close-game" onclick="closeGame('dino')">بستن</button>
+            </div>
+            <canvas id="dinoCanvas" class="game-canvas"></canvas>
+            <div class="game-controls">
+                برای پرش کلید فاصله یا جهت بالا را فشار دهید
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال بازی تتریس -->
+    <div id="tetrisGameModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-score">امتیاز: <span id="tetrisScore">0</span></div>
+                <button class="close-game" onclick="closeGame('tetris')">بستن</button>
+            </div>
+            <canvas id="tetrisCanvas" class="game-canvas"></canvas>
+            <div class="game-controls">
+                از کلیدهای جهت‌دار برای حرکت و چرخش استفاده کنید
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال بازی پازل -->
+    <div id="puzzleGameModal" class="game-modal">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-score">مرحله: <span id="puzzleLevel">1</span></div>
+                <button class="close-game" onclick="closeGame('puzzle')">بستن</button>
+            </div>
+            <div id="puzzleBoard" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 10px 0;"></div>
+            <button class="mini-game-btn" onclick="resetPuzzleGame()" style="margin-top: 15px;">شروع مجدد</button>
         </div>
     </div>
 
@@ -505,202 +706,1269 @@
             }
         });
 
-        // بازی مار
-        let snakeGame;
-        let gameInterval;
+        // توابع مدیریت مودال‌ها
+        function openGameSelection() {
+            document.getElementById('gameSelectionModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function closeGame(gameType) {
+            document.getElementById(`${gameType}GameModal`).style.display = 'none';
+            
+            // توقف بازی‌های مختلف
+            switch(gameType) {
+                case 'snake':
+                    snakeGameOver = true;
+                    break;
+                case 'flappy':
+                    flappyGameOver = true;
+                    cancelAnimationFrame(flappyAnimationId);
+                    break;
+                case 'dino':
+                    dinoGameOver = true;
+                    cancelAnimationFrame(dinoAnimationId);
+                    break;
+                case 'tetris':
+                    tetrisGameOver = true;
+                    cancelAnimationFrame(tetrisAnimationId);
+                    break;
+            }
+        }
+
+        // ==================== بازی مار ====================
+        let snakeGameOver = false;
+        let snakeLastTimestamp = 0;
+        let snakeGridSize = 20;
+        let snakeTileCount;
+        let snake = [];
+        let snakeFood = {};
+        let snakeXVelocity = 0;
+        let snakeYVelocity = 0;
+        let snakeScore = 0;
+        let snakeGameSpeed = 200;
 
         function openSnakeGame() {
-            document.getElementById('gameModal').style.display = 'flex';
+            closeModal('gameSelectionModal');
+            document.getElementById('snakeGameModal').style.display = 'flex';
             initSnakeGame();
         }
 
-        function closeGame() {
-            document.getElementById('gameModal').style.display = 'none';
-            clearInterval(gameInterval);
-        }
-
         function initSnakeGame() {
-            const canvas = document.getElementById('gameCanvas');
+            const canvas = document.getElementById('snakeCanvas');
             const ctx = canvas.getContext('2d');
-            const scoreElement = document.getElementById('score');
+            const scoreElement = document.getElementById('snakeScore');
 
-            // تنظیمات بازی
-            const gridSize = 20;
-            const tileCount = canvas.width / gridSize;
-            let score = 0;
+            // تنظیمات اولیه
+            resizeSnakeCanvas();
+            snakeTileCount = Math.floor(canvas.width / snakeGridSize);
+            snakeScore = 0;
+            scoreElement.textContent = snakeScore;
 
-            // مار
-            let snake = [
-                {x: 10, y: 10}
+            // مقداردهی اولیه مار
+            snake = [
+                {x: Math.floor(snakeTileCount/2), y: Math.floor(snakeTileCount/2)}
             ];
 
-            // غذا
-            let food = {
-                x: Math.floor(Math.random() * tileCount),
-                y: Math.floor(Math.random() * tileCount)
+            // ایجاد غذا
+            createSnakeFood();
+
+            // تنظیم کنترل‌ها
+            setupSnakeTouchControls();
+
+            // شروع بازی
+            snakeXVelocity = 0;
+            snakeYVelocity = 0;
+            snakeGameOver = false;
+            snakeLastTimestamp = 0;
+            requestAnimationFrame(snakeGameLoop);
+        }
+
+        function resizeSnakeCanvas() {
+            const canvas = document.getElementById('snakeCanvas');
+            const gameContainer = document.querySelector('.game-container');
+
+            // تنظیم سایز بر اساس عرض صفحه
+            const size = Math.min(gameContainer.offsetWidth - 40, 400);
+            canvas.width = size;
+            canvas.height = size;
+            snakeGridSize = size / 20;
+
+            // نمایش دکمه‌های لمسی فقط در موبایل
+            const touchControls = document.getElementById('snakeTouchControls');
+            if (window.innerWidth <= 768) {
+                touchControls.style.display = 'block';
+            } else {
+                touchControls.style.display = 'none';
+            }
+        }
+
+        function createSnakeFood() {
+            snakeFood = {
+                x: Math.floor(Math.random() * snakeTileCount),
+                y: Math.floor(Math.random() * snakeTileCount)
             };
 
-            // جهت حرکت
-            let xVelocity = 0;
-            let yVelocity = 0;
+            // اطمینان از اینکه غذا روی مار نباشد
+            for (let segment of snake) {
+                if (segment.x === snakeFood.x && segment.y === snakeFood.y) {
+                    return createSnakeFood();
+                }
+            }
+        }
 
-            // تصویر لوگوی کافه (می‌توانید آدرس تصویر خود را جایگزین کنید)
-            const logoImg = new Image();
-            logoImg.src = 'https://i.ibb.co/r2TjrVXz/photo-2025-08-01-00-40-14.jpg';
-
-            // تصویر غذا (قهوه)
-            const foodImg = new Image();
-            foodImg.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjOEI0NTEzIiBkPSJNNDE2IDI1NkM0MTYgMzM0LjkgMzUwLjkgNDAwIDI3MiA0MDBIMjAwQzEyMS4xIDQwMCA1NiAzMzQuOSA1NiAyNTZDNTYgMTc3LjEgMTIxLjEgMTEyIDIwMCAxMTJIMjcyQzM1MC45IDExMiA0MTYgMTc3LjEgNDE2IDI1NloiLz48cGF0aCBmaWxsPSIjQTUyQTJBIiBkPSJNMzg0IDMyMEMzODQgMjQxLjEgMzI5LjkgMTg3IDI3MiAxODdIMjAwQzE0Mi4xIDE4NyA4OCAyNDEuMSA4OCAyOTlDODggMzU2LjkgMTQyLjEgNDExIDIwMCA0MTFIMjcyQzMyOS45IDQxMSAzODQgMzU2LjkgMzg0IDI5OVYzMjBaIi8+PC9zdmc+';
-
-            // تابع رسم بازی
-            function drawGame() {
-                // پاک کردن صفحه
-                ctx.fillStyle = '#f0f0f0';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                // رسم غذا
-                ctx.drawImage(foodImg, food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-
-                // رسم مار
-                snake.forEach((part, index) => {
-                    if (index === 0) {
-                        // سر مار (لوگوی کافه)
-                        ctx.drawImage(logoImg, part.x * gridSize, part.y * gridSize, gridSize, gridSize);
-                    } else {
-                        // بدن مار
-                        ctx.fillStyle = '#8B4513';
-                        ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize, gridSize);
-                    }
-                });
+        function snakeGameLoop(timestamp) {
+            if (!snakeLastTimestamp) {
+                snakeLastTimestamp = timestamp;
             }
 
-            // تابع به‌روزرسانی بازی
-            function updateGame() {
-                // حرکت مار
-                const head = {x: snake[0].x + xVelocity, y: snake[0].y + yVelocity};
-                snake.unshift(head);
+            const deltaTime = timestamp - snakeLastTimestamp;
 
-                // بررسی برخورد با غذا
-                if (head.x === food.x && head.y === food.y) {
-                    score += 10;
-                    scoreElement.textContent = score;
+            if (deltaTime >= snakeGameSpeed) { // تنظیم سرعت بازی
+                updateSnakeGame();
+                snakeLastTimestamp = timestamp;
+            }
 
-                    // تولید غذا جدید
-                    food = {
-                        x: Math.floor(Math.random() * tileCount),
-                        y: Math.floor(Math.random() * tileCount)
-                    };
+            if (!snakeGameOver) {
+                requestAnimationFrame(snakeGameLoop);
+            }
+        }
+
+        function updateSnakeGame() {
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('snakeScore');
+
+            // حرکت مار
+            const head = {x: snake[0].x + snakeXVelocity, y: snake[0].y + snakeYVelocity};
+            snake.unshift(head);
+
+            // بررسی برخورد با غذا
+            if (head.x === snakeFood.x && head.y === snakeFood.y) {
+                snakeScore += 10;
+                scoreElement.textContent = snakeScore;
+                createSnakeFood();
+                
+                // افزایش سرعت بازی با افزایش امتیاز
+                if (snakeScore % 50 === 0 && snakeGameSpeed > 100) {
+                    snakeGameSpeed -= 10;
+                }
+            } else {
+                snake.pop();
+            }
+
+            // بررسی برخورد با دیوار یا خودش
+            if (head.x < 0 || head.x >= snakeTileCount || head.y < 0 || head.y >= snakeTileCount ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)) {
+                snakeGameOver = true;
+                setTimeout(() => {
+                    alert(`بازی تمام شد! امتیاز شما: ${snakeScore}`);
+                    closeGame('snake');
+                }, 100);
+                return;
+            }
+
+            // رسم بازی
+            drawSnakeGame();
+        }
+
+        function drawSnakeGame() {
+            const canvas = document.getElementById('snakeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // پاک کردن صفحه
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // رسم غذا
+            ctx.fillStyle = '#A52A2A';
+            ctx.beginPath();
+            ctx.arc(
+                snakeFood.x * snakeGridSize + snakeGridSize/2,
+                snakeFood.y * snakeGridSize + snakeGridSize/2,
+                snakeGridSize/2, 0, Math.PI * 2
+            );
+            ctx.fill();
+
+            // رسم مار
+            snake.forEach((segment, index) => {
+                if (index === 0) {
+                    // سر مار
+                    ctx.fillStyle = '#8B4513';
+                    ctx.beginPath();
+                    ctx.arc(
+                        segment.x * snakeGridSize + snakeGridSize/2,
+                        segment.y * snakeGridSize + snakeGridSize/2,
+                        snakeGridSize/2, 0, Math.PI * 2
+                    );
+                    ctx.fill();
+                    
+                    // چشم‌ها
+                    ctx.fillStyle = 'white';
+                    let eyeOffsetX = 0;
+                    let eyeOffsetY = 0;
+                    
+                    if (snakeXVelocity === 1) { // راست
+                        eyeOffsetX = snakeGridSize/4;
+                        eyeOffsetY = -snakeGridSize/6;
+                    } else if (snakeXVelocity === -1) { // چپ
+                        eyeOffsetX = -snakeGridSize/4;
+                        eyeOffsetY = -snakeGridSize/6;
+                    } else if (snakeYVelocity === -1) { // بالا
+                        eyeOffsetX = 0;
+                        eyeOffsetY = -snakeGridSize/4;
+                    } else { // پایین
+                        eyeOffsetX = 0;
+                        eyeOffsetY = snakeGridSize/4;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(
+                        segment.x * snakeGridSize + snakeGridSize/2 + eyeOffsetX,
+                        segment.y * snakeGridSize + snakeGridSize/2 + eyeOffsetY,
+                        snakeGridSize/8, 0, Math.PI * 2
+                    );
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(
+                        segment.x * snakeGridSize + snakeGridSize/2 + eyeOffsetX,
+                        segment.y * snakeGridSize + snakeGridSize/2 + eyeOffsetY,
+                        snakeGridSize/16, 0, Math.PI * 2
+                    );
+                    ctx.fillStyle = 'black';
+                    ctx.fill();
                 } else {
-                    snake.pop();
+                    // بدن مار
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(
+                        segment.x * snakeGridSize,
+                        segment.y * snakeGridSize,
+                        snakeGridSize, snakeGridSize
+                    );
+                    
+                    // خطوط روی بدن مار
+                    ctx.strokeStyle = '#D2B48C';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(
+                        segment.x * snakeGridSize + snakeGridSize/2,
+                        segment.y * snakeGridSize
+                    );
+                    ctx.lineTo(
+                        segment.x * snakeGridSize + snakeGridSize/2,
+                        segment.y * snakeGridSize + snakeGridSize
+                    );
+                    ctx.stroke();
                 }
+            });
+        }
 
-                // بررسی برخورد با دیوارها
-                if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
-                    gameOver();
+        // تابع تغییر جهت با دکمه‌های مجازی
+        function changeSnakeDirection(x, y) {
+            if ((snakeXVelocity === 0 || x !== -snakeXVelocity) &&
+                (snakeYVelocity === 0 || y !== -snakeYVelocity)) {
+                snakeXVelocity = x;
+                snakeYVelocity = y;
+            }
+        }
+
+        // کنترل‌های لمسی
+        function setupSnakeTouchControls() {
+            const canvas = document.getElementById('snakeCanvas');
+
+            canvas.addEventListener('touchstart', handleSnakeTouchStart, {passive: false});
+            canvas.addEventListener('touchmove', handleSnakeTouchMove, {passive: false});
+        }
+
+        function handleSnakeTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            e.preventDefault();
+        }
+
+        function handleSnakeTouchMove(e) {
+            if (!touchStartX || !touchStartY) return;
+
+            const touchEndX = e.touches[0].clientX;
+            const touchEndY = e.touches[0].clientY;
+
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // حداقل حرکت برای تشخیص سوایپ
+            if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // حرکت افقی
+                if (diffX > 0 && snakeXVelocity !== 1) {
+                    // چپ
+                    snakeXVelocity = -1;
+                    snakeYVelocity = 0;
+                } else if (diffX < 0 && snakeXVelocity !== -1) {
+                    // راست
+                    snakeXVelocity = 1;
+                    snakeYVelocity = 0;
                 }
+            } else {
+                // حرکت عمودی
+                if (diffY > 0 && snakeYVelocity !== 1) {
+                    // بالا
+                    snakeXVelocity = 0;
+                    snakeYVelocity = -1;
+                } else if (diffY < 0 && snakeYVelocity !== -1) {
+                    // پایین
+                    snakeXVelocity = 0;
+                    snakeYVelocity = 1;
+                }
+            }
 
-                // بررسی برخورد با خود
-                for (let i = 1; i < snake.length; i++) {
-                    if (head.x === snake[i].x && head.y === snake[i].y) {
-                        gameOver();
+            touchStartX = 0;
+            touchStartY = 0;
+            e.preventDefault();
+        }
+
+        // ==================== بازی حافظه ====================
+        let memoryCards = [];
+        let memoryFlippedCards = [];
+        let memoryMatchedPairs = 0;
+        let memoryScore = 0;
+        let memoryIcons = ['coffee', 'mug-hot', 'cookie', 'cake', 'ice-cream', 'lemon', 'apple-alt', 'wine-glass-alt'];
+        let memoryGameIcons = [];
+
+        function openMemoryGame() {
+            closeModal('gameSelectionModal');
+            document.getElementById('memoryGameModal').style.display = 'flex';
+            initMemoryGame();
+        }
+
+        function initMemoryGame() {
+            memoryCards = [];
+            memoryFlippedCards = [];
+            memoryMatchedPairs = 0;
+            memoryScore = 0;
+            document.getElementById('memoryScore').textContent = memoryScore;
+            
+            // انتخاب 8 آیکون تصادفی و دوبرابر کردن آنها
+            memoryGameIcons = [...memoryIcons].sort(() => 0.5 - Math.random()).slice(0, 8);
+            memoryGameIcons = [...memoryGameIcons, ...memoryGameIcons].sort(() => 0.5 - Math.random());
+            
+            const memoryBoard = document.getElementById('memoryBoard');
+            memoryBoard.innerHTML = '';
+            
+            // ایجاد کارت‌ها
+            memoryGameIcons.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.dataset.icon = icon;
+                card.innerHTML = `<i class="fas fa-${icon}"></i>`;
+                card.style.backgroundColor = '#8B4513';
+                card.style.color = 'white';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'center';
+                card.style.alignItems = 'center';
+                card.style.fontSize = '24px';
+                card.style.height = '60px';
+                card.style.borderRadius = '5px';
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', flipMemoryCard);
+                memoryBoard.appendChild(card);
+                memoryCards.push(card);
+            });
+        }
+
+        function flipMemoryCard() {
+            // اگر کارت قبلا برگردانده شده یا دو کارت در حال بررسی هستند، کاری نکن
+            if (this.classList.contains('flipped') return;
+            if (memoryFlippedCards.length === 2) return;
+            
+            // برگرداندن کارت
+            this.classList.add('flipped');
+            this.style.backgroundColor = 'white';
+            this.style.color = '#8B4513';
+            memoryFlippedCards.push(this);
+            
+            // اگر دو کارت برگردانده شده، بررسی تطابق
+            if (memoryFlippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 500);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const card1 = memoryFlippedCards[0];
+            const card2 = memoryFlippedCards[1];
+            
+            if (card1.dataset.icon === card2.dataset.icon) {
+                // تطابق پیدا شد
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                memoryMatchedPairs++;
+                memoryScore += 20;
+                document.getElementById('memoryScore').textContent = memoryScore;
+                
+                // بررسی پایان بازی
+                if (memoryMatchedPairs === 8) {
+                    setTimeout(() => {
+                        alert(`تبریک! شما برنده شدید! امتیاز نهایی: ${memoryScore}`);
+                    }, 300);
+                }
+            } else {
+                // عدم تطابق
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.style.backgroundColor = '#8B4513';
+                card1.style.color = 'white';
+                card2.style.backgroundColor = '#8B4513';
+                card2.style.color = 'white';
+                
+                // کاهش امتیاز برای حدس اشتباه
+                memoryScore = Math.max(0, memoryScore - 5);
+                document.getElementById('memoryScore').textContent = memoryScore;
+            }
+            
+            memoryFlippedCards = [];
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        // ==================== بازی فلپی کافه ====================
+        let flappyGameOver = false;
+        let flappyAnimationId;
+        let flappyScore = 0;
+        let flappyBird = { x: 50, y: 150, radius: 15 };
+        let flappyGravity = 0.5;
+        let flappyVelocity = 0;
+        let flappyJump = -10;
+        let flappyPipes = [];
+        let flappyPipeWidth = 50;
+        let flappyGap = 120;
+        let flappyPipeSpeed = 2;
+        let flappyPipeTimer = 0;
+        let flappyPipeInterval = 150;
+
+        function openFlappyGame() {
+            closeModal('gameSelectionModal');
+            document.getElementById('flappyGameModal').style.display = 'flex';
+            initFlappyGame();
+        }
+
+        function initFlappyGame() {
+            const canvas = document.getElementById('flappyCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // تنظیم سایز کانواس
+            canvas.width = 320;
+            canvas.height = 480;
+            
+            flappyBird = { x: 50, y: 150, radius: 15 };
+            flappyVelocity = 0;
+            flappyScore = 0;
+            document.getElementById('flappyScore').textContent = flappyScore;
+            flappyPipes = [];
+            flappyGameOver = false;
+            
+            // شروع بازی
+            flappyAnimationId = requestAnimationFrame(flappyGameLoop);
+        }
+
+        function flappyGameLoop() {
+            if (flappyGameOver) return;
+            
+            const canvas = document.getElementById('flappyCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // پاک کردن صفحه
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // حرکت پرنده
+            flappyVelocity += flappyGravity;
+            flappyBird.y += flappyVelocity;
+            
+            // ایجاد لوله‌های جدید
+            flappyPipeTimer++;
+            if (flappyPipeTimer > flappyPipeInterval) {
+                const pipeHeight = Math.floor(Math.random() * (canvas.height - flappyGap - 100)) + 50;
+                flappyPipes.push({
+                    x: canvas.width,
+                    height: pipeHeight,
+                    passed: false
+                });
+                flappyPipes.push({
+                    x: canvas.width,
+                    y: pipeHeight + flappyGap,
+                    height: canvas.height - pipeHeight - flappyGap
+                });
+                flappyPipeTimer = 0;
+            }
+            
+            // حرکت و رسم لوله‌ها
+            for (let i = 0; i < flappyPipes.length; i++) {
+                const pipe = flappyPipes[i];
+                pipe.x -= flappyPipeSpeed;
+                
+                // رنگ لوله‌ها (سبز برای لوله بالایی، قهوه‌ای برای لوله پایینی)
+                ctx.fillStyle = i % 2 === 0 ? '#2E8B57' : '#8B4513';
+                
+                if (i % 2 === 0) {
+                    // لوله بالایی
+                    ctx.fillRect(pipe.x, 0, flappyPipeWidth, pipe.height);
+                } else {
+                    // لوله پایینی
+                    ctx.fillRect(pipe.x, pipe.y, flappyPipeWidth, pipe.height);
+                }
+                
+                // بررسی برخورد
+                if (
+                    flappyBird.x + flappyBird.radius > pipe.x && 
+                    flappyBird.x - flappyBird.radius < pipe.x + flappyPipeWidth
+                ) {
+                    if (i % 2 === 0) {
+                        // لوله بالایی
+                        if (flappyBird.y - flappyBird.radius < pipe.height) {
+                            flappyGameOver = true;
+                        }
+                    } else {
+                        // لوله پایینی
+                        if (flappyBird.y + flappyBird.radius > pipe.y) {
+                            flappyGameOver = true;
+                        }
                     }
                 }
-
-                drawGame();
+                
+                // افزایش امتیاز وقتی پرنده از لوله عبور می‌کند
+                if (!pipe.passed && pipe.x + flappyPipeWidth < flappyBird.x && i % 2 === 0) {
+                    pipe.passed = true;
+                    flappyScore++;
+                    document.getElementById('flappyScore').textContent = flappyScore;
+                    
+                    // افزایش سرعت بازی با افزایش امتیاز
+                    if (flappyScore % 5 === 0) {
+                        flappyPipeSpeed += 0.5;
+                    }
+                }
             }
-
-            // تابع پایان بازی
-            function gameOver() {
-                clearInterval(gameInterval);
-                alert(`بازی تمام شد! امتیاز شما: ${score}`);
-                closeGame();
+            
+            // حذف لوله‌های خارج از صفحه
+            if (flappyPipes.length > 0 && flappyPipes[0].x + flappyPipeWidth < 0) {
+                flappyPipes.shift();
+                flappyPipes.shift();
             }
+            
+            // بررسی برخورد با زمین یا سقف
+            if (
+                flappyBird.y + flappyBird.radius > canvas.height || 
+                flappyBird.y - flappyBird.radius < 0
+            ) {
+                flappyGameOver = true;
+            }
+            
+            // رسم پرنده (به شکل فنجان قهوه)
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.arc(flappyBird.x, flappyBird.y, flappyBird.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#A52A2A';
+            ctx.beginPath();
+            ctx.arc(flappyBird.x, flappyBird.y - 5, flappyBird.radius - 5, 0, Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = '#D2B48C';
+            ctx.beginPath();
+            ctx.moveTo(flappyBird.x - flappyBird.radius, flappyBird.y);
+            ctx.lineTo(flappyBird.x - flappyBird.radius - 10, flappyBird.y + 20);
+            ctx.lineTo(flappyBird.x + flappyBird.radius + 10, flappyBird.y + 20);
+            ctx.lineTo(flappyBird.x + flappyBird.radius, flappyBird.y);
+            ctx.fill();
+            
+            // نمایش پیام پایان بازی
+            if (flappyGameOver) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Vazirmatn';
+                ctx.textAlign = 'center';
+                ctx.fillText('بازی تمام شد!', canvas.width / 2, canvas.height / 2 - 20);
+                ctx.fillText(`امتیاز شما: ${flappyScore}`, canvas.width / 2, canvas.height / 2 + 20);
+                
+                ctx.font = '16px Vazirmatn';
+                ctx.fillText('برای شروع مجدد کلیک کنید', canvas.width / 2, canvas.height / 2 + 60);
+                
+                canvas.addEventListener('click', restartFlappyGame, { once: true });
+                return;
+            }
+            
+            flappyAnimationId = requestAnimationFrame(flappyGameLoop);
+        }
 
-            // کنترل با کیبورد
-            document.addEventListener('keydown', (e) => {
+        function restartFlappyGame() {
+            initFlappyGame();
+        }
+
+        // کنترل پرنده با کلیک یا کلید فاصله
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && document.getElementById('flappyGameModal').style.display === 'flex') {
+                flappyVelocity = flappyJump;
+                e.preventDefault();
+            }
+        });
+
+        document.getElementById('flappyCanvas').addEventListener('click', () => {
+            if (document.getElementById('flappyGameModal').style.display === 'flex') {
+                flappyVelocity = flappyJump;
+            }
+        });
+
+        // ==================== بازی دایناسور ====================
+        let dinoGameOver = false;
+        let dinoAnimationId;
+        let dinoScore = 0;
+        let dino = { x: 50, y: 150, width: 40, height: 60, isJumping: false, velocity: 0 };
+        let dinoGravity = 0.5;
+        let dinoJump = -12;
+        let dinoCacti = [];
+        let dinoSpeed = 5;
+        let dinoCactusTimer = 0;
+        let dinoCactusInterval = 100;
+
+        function openDinoGame() {
+            closeModal('gameSelectionModal');
+            document.getElementById('dinoGameModal').style.display = 'flex';
+            initDinoGame();
+        }
+
+        function initDinoGame() {
+            const canvas = document.getElementById('dinoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // تنظیم سایز کانواس
+            canvas.width = 400;
+            canvas.height = 200;
+            
+            dino = { x: 50, y: 150, width: 40, height: 60, isJumping: false, velocity: 0 };
+            dinoScore = 0;
+            document.getElementById('dinoScore').textContent = dinoScore;
+            dinoCacti = [];
+            dinoGameOver = false;
+            
+            // شروع بازی
+            dinoAnimationId = requestAnimationFrame(dinoGameLoop);
+        }
+
+        function dinoGameLoop() {
+            if (dinoGameOver) return;
+            
+            const canvas = document.getElementById('dinoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // پاک کردن صفحه
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // زمین
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, canvas.height - 10, canvas.width, 10);
+            
+            // حرکت دایناسور
+            if (dino.isJumping) {
+                dino.velocity += dinoGravity;
+                dino.y += dino.velocity;
+                
+                // بررسی فرود آمدن
+                if (dino.y >= 150) {
+                    dino.y = 150;
+                    dino.isJumping = false;
+                    dino.velocity = 0;
+                }
+            }
+            
+            // ایجاد کاکتوس‌های جدید
+            dinoCactusTimer++;
+            if (dinoCactusTimer > dinoCactusInterval) {
+                const cactusHeight = Math.floor(Math.random() * 30) + 20;
+                dinoCacti.push({
+                    x: canvas.width,
+                    y: canvas.height - 10 - cactusHeight,
+                    width: 20,
+                    height: cactusHeight
+                });
+                dinoCactusTimer = 0;
+                
+                // کاهش فاصله بین کاکتوس‌ها با افزایش امتیاز
+                if (dinoScore > 10) {
+                    dinoCactusInterval = Math.max(50, 100 - Math.floor(dinoScore / 5));
+                }
+            }
+            
+            // حرکت و رسم کاکتوس‌ها
+            for (let i = 0; i < dinoCacti.length; i++) {
+                const cactus = dinoCacti[i];
+                cactus.x -= dinoSpeed;
+                
+                // رسم کاکتوس
+                ctx.fillStyle = '#2E8B57';
+                ctx.fillRect(cactus.x, cactus.y, cactus.width, cactus.height);
+                
+                // بررسی برخورد
+                if (
+                    dino.x + dino.width > cactus.x && 
+                    dino.x < cactus.x + cactus.width && 
+                    dino.y + dino.height > cactus.y
+                ) {
+                    dinoGameOver = true;
+                }
+                
+                // افزایش امتیاز وقتی از کاکتوس عبور می‌کند
+                if (cactus.x + cactus.width < dino.x && !cactus.passed) {
+                    cactus.passed = true;
+                    dinoScore++;
+                    document.getElementById('dinoScore').textContent = dinoScore;
+                    
+                    // افزایش سرعت بازی با افزایش امتیاز
+                    if (dinoScore % 5 === 0) {
+                        dinoSpeed += 0.5;
+                    }
+                }
+            }
+            
+            // حذف کاکتوس‌های خارج از صفحه
+            if (dinoCacti.length > 0 && dinoCacti[0].x + dinoCacti[0].width < 0) {
+                dinoCacti.shift();
+            }
+            
+            // رسم دایناسور (به شکل ساده)
+            ctx.fillStyle = '#555';
+            ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+            
+            // چشم دایناسور
+            ctx.fillStyle = 'white';
+            ctx.fillRect(dino.x + 25, dino.y + 15, 8, 8);
+            
+            // نمایش پیام پایان بازی
+            if (dinoGameOver) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '20px Vazirmatn';
+                ctx.textAlign = 'center';
+                ctx.fillText('بازی تمام شد!', canvas.width / 2, canvas.height / 2 - 20);
+                ctx.fillText(`امتیاز شما: ${dinoScore}`, canvas.width / 2, canvas.height / 2 + 20);
+                
+                ctx.font = '14px Vazirmatn';
+                ctx.fillText('برای شروع مجدد کلیک کنید', canvas.width / 2, canvas.height / 2 + 50);
+                
+                canvas.addEventListener('click', restartDinoGame, { once: true });
+                return;
+            }
+            
+            dinoAnimationId = requestAnimationFrame(dinoGameLoop);
+        }
+
+        function restartDinoGame() {
+            initDinoGame();
+        }
+
+        // کنترل دایناسور با کلید فاصله یا جهت بالا
+        document.addEventListener('keydown', (e) => {
+            if ((e.code === 'Space' || e.key === 'ArrowUp') && 
+                document.getElementById('dinoGameModal').style.display === 'flex' && 
+                !dino.isJumping) {
+                dino.isJumping = true;
+                dino.velocity = dinoJump;
+                e.preventDefault();
+            }
+        });
+
+        document.getElementById('dinoCanvas').addEventListener('click', () => {
+            if (document.getElementById('dinoGameModal').style.display === 'flex' && !dino.isJumping) {
+                dino.isJumping = true;
+                dino.velocity = dinoJump;
+            }
+        });
+
+        // ==================== بازی تتریس ====================
+        let tetrisGameOver = false;
+        let tetrisAnimationId;
+        let tetrisScore = 0;
+        let tetrisBoard = [];
+        const tetrisRows = 20;
+        const tetrisCols = 10;
+        let tetrisPiece = null;
+        let tetrisNextPiece = null;
+        const tetrisPieces = [
+            { shape: [[1,1,1,1]], color: '#00FFFF' }, // I
+            { shape: [[1,1,1], [0,1,0]], color: '#800080' }, // T
+            { shape: [[1,1,1], [1,0,0]], color: '#0000FF' }, // L
+            { shape: [[1,1,1], [0,0,1]], color: '#FF7F00' }, // J
+            { shape: [[1,1], [1,1]], color: '#FFFF00' }, // O
+            { shape: [[0,1,1], [1,1,0]], color: '#00FF00' }, // S
+            { shape: [[1,1,0], [0,1,1]], color: '#FF0000' } // Z
+        ];
+        let tetrisDropStart = Date.now();
+        let tetrisSpeed = 1000;
+
+        function openTetrisGame() {
+            closeModal('gameSelectionModal');
+            document.getElementById('tetrisGameModal').style.display = 'flex';
+            initTetrisGame();
+        }
+
+        function initTetrisGame() {
+            const canvas = document.getElementById('tetrisCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // تنظیم سایز کانواس
+            canvas.width = 300;
+            canvas.height = 600;
+            
+            // ایجاد صفحه خالی
+            tetrisBoard = Array(tetrisRows).fill().map(() => Array(tetrisCols).fill(0));
+            
+            tetrisScore = 0;
+            document.getElementById('tetrisScore').textContent = tetrisScore;
+            tetrisGameOver = false;
+            
+            // ایجاد قطعه اولیه و قطعه بعدی
+            tetrisPiece = createTetrisPiece();
+            tetrisNextPiece = createTetrisPiece();
+            
+            // شروع بازی
+            tetrisDropStart = Date.now();
+            tetrisAnimationId = requestAnimationFrame(tetrisGameLoop);
+        }
+
+        function createTetrisPiece() {
+            const randomIndex = Math.floor(Math.random() * tetrisPieces.length);
+            const piece = JSON.parse(JSON.stringify(tetrisPieces[randomIndex]));
+            piece.x = Math.floor(tetrisCols / 2) - Math.floor(piece.shape[0].length / 2);
+            piece.y = 0;
+            return piece;
+        }
+
+        function tetrisGameLoop() {
+            if (tetrisGameOver) return;
+            
+            const canvas = document.getElementById('tetrisCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // پاک کردن صفحه
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // حرکت خودکار قطعه به پایین
+            const now = Date.now();
+            const delta = now - tetrisDropStart;
+            
+            if (delta > tetrisSpeed) {
+                moveTetrisPiece(0, 1);
+                tetrisDropStart = now;
+            }
+            
+            // رسم صفحه
+            drawTetrisBoard();
+            
+            // رسم قطعه فعلی
+            drawTetrisPiece();
+            
+            tetrisAnimationId = requestAnimationFrame(tetrisGameLoop);
+        }
+
+        function drawTetrisBoard() {
+            const canvas = document.getElementById('tetrisCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // رسم خانه‌های خالی
+            for (let y = 0; y < tetrisRows; y++) {
+                for (let x = 0; x < tetrisCols; x++) {
+                    drawTetrisBlock(x, y, tetrisBoard[y][x] ? tetrisBoard[y][x] : '#f0f0f0');
+                }
+            }
+            
+            // رسم خطوط شبکه
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 0.5;
+            
+            for (let y = 0; y <= tetrisRows; y++) {
+                ctx.beginPath();
+                ctx.moveTo(0, y * 30);
+                ctx.lineTo(canvas.width, y * 30);
+                ctx.stroke();
+            }
+            
+            for (let x = 0; x <= tetrisCols; x++) {
+                ctx.beginPath();
+                ctx.moveTo(x * 30, 0);
+                ctx.lineTo(x * 30, canvas.height);
+                ctx.stroke();
+            }
+        }
+
+        function drawTetrisPiece() {
+            if (!tetrisPiece) return;
+            
+            for (let y = 0; y < tetrisPiece.shape.length; y++) {
+                for (let x = 0; x < tetrisPiece.shape[y].length; x++) {
+                    if (tetrisPiece.shape[y][x]) {
+                        const boardX = tetrisPiece.x + x;
+                        const boardY = tetrisPiece.y + y;
+                        
+                        if (boardY >= 0) { // فقط اگر در صفحه قابل مشاهده است رسم شود
+                            drawTetrisBlock(boardX, boardY, tetrisPiece.color);
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawTetrisBlock(x, y, color) {
+            const canvas = document.getElementById('tetrisCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = color;
+            ctx.fillRect(x * 30, y * 30, 30, 30);
+            
+            // اضافه کردن سایه برای زیبایی
+            if (color !== '#f0f0f0') {
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x * 30 + 2, y * 30 + 2, 26, 26);
+                
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x * 30, y * 30, 30, 30);
+            }
+        }
+
+        function moveTetrisPiece(dx, dy) {
+            if (!tetrisPiece) return;
+            
+            // بررسی امکان حرکت
+            if (!canMoveTetrisPiece(tetrisPiece, dx, dy)) {
+                if (dy === 1) { // اگر حرکت به پایین ممکن نبود
+                    lockTetrisPiece();
+                    clearTetrisRows();
+                    
+                    // بررسی پایان بازی
+                    if (tetrisPiece.y <= 0) {
+                        tetrisGameOver = true;
+                        setTimeout(() => {
+                            alert(`بازی تمام شد! امتیاز شما: ${tetrisScore}`);
+                            closeGame('tetris');
+                        }, 100);
+                        return;
+                    }
+                    
+                    // قطعه جدید
+                    tetrisPiece = tetrisNextPiece;
+                    tetrisNextPiece = createTetrisPiece();
+                }
+                return false;
+            }
+            
+            tetrisPiece.x += dx;
+            tetrisPiece.y += dy;
+            return true;
+        }
+
+        function canMoveTetrisPiece(piece, dx, dy) {
+            for (let y = 0; y < piece.shape.length; y++) {
+                for (let x = 0; x < piece.shape[y].length; x++) {
+                    if (piece.shape[y][x]) {
+                        const newX = piece.x + x + dx;
+                        const newY = piece.y + y + dy;
+                        
+                        // بررسی خروج از مرزها یا برخورد با قطعات دیگر
+                        if (
+                            newX < 0 || 
+                            newX >= tetrisCols || 
+                            newY >= tetrisRows || 
+                            (newY >= 0 && tetrisBoard[newY][newX])
+                        ) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function lockTetrisPiece() {
+            for (let y = 0; y < tetrisPiece.shape.length; y++) {
+                for (let x = 0; x < tetrisPiece.shape[y].length; x++) {
+                    if (tetrisPiece.shape[y][x]) {
+                        const boardY = tetrisPiece.y + y;
+                        if (boardY >= 0) { // فقط اگر در صفحه است قفل شود
+                            tetrisBoard[boardY][tetrisPiece.x + x] = tetrisPiece.color;
+                        }
+                    }
+                }
+            }
+        }
+
+        function clearTetrisRows() {
+            let rowsCleared = 0;
+            
+            for (let y = tetrisRows - 1; y >= 0; y--) {
+                if (tetrisBoard[y].every(cell => cell !== 0)) {
+                    // حذف ردیف کامل
+                    tetrisBoard.splice(y, 1);
+                    tetrisBoard.unshift(Array(tetrisCols).fill(0));
+                    rowsCleared++;
+                    y++; // بررسی دوباره همین ردیف (که الان ردیف بالایی است)
+                }
+            }
+            
+            // افزایش امتیاز
+            if (rowsCleared > 0) {
+                tetrisScore += rowsCleared * rowsCleared * 100;
+                document.getElementById('tetrisScore').textContent = tetrisScore;
+                
+                // افزایش سرعت بازی
+                tetrisSpeed = Math.max(100, 1000 - Math.floor(tetrisScore / 1000) * 100);
+            }
+        }
+
+        function rotateTetrisPiece() {
+            if (!tetrisPiece) return;
+            
+            // چرخش ماتریس شکل قطعه
+            const rotated = [];
+            for (let x = 0; x < tetrisPiece.shape[0].length; x++) {
+                rotated.push([]);
+                for (let y = tetrisPiece.shape.length - 1; y >= 0; y--) {
+                    rotated[x].push(tetrisPiece.shape[y][x]);
+                }
+            }
+            
+            // بررسی امکان چرخش
+            const originalShape = tetrisPiece.shape;
+            tetrisPiece.shape = rotated;
+            
+            if (!canMoveTetrisPiece(tetrisPiece, 0, 0)) {
+                // اگر چرخش ممکن نبود، به حالت قبل برگرد
+                tetrisPiece.shape = originalShape;
+            }
+        }
+
+        // کنترل‌های کیبورد برای تتریس
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('tetrisGameModal').style.display !== 'flex') return;
+            
+            switch(e.key) {
+                case 'ArrowLeft':
+                    moveTetrisPiece(-1, 0);
+                    break;
+                case 'ArrowRight':
+                    moveTetrisPiece(1, 0);
+                    break;
+                case 'ArrowDown':
+                    moveTetrisPiece(0, 1);
+                    break;
+                case 'ArrowUp':
+                    rotateTetrisPiece();
+                    break;
+                case ' ':
+                    // حرکت سریع به پایین
+                    while (moveTetrisPiece(0, 1)) {}
+                    break;
+            }
+        });
+
+        // ==================== بازی پازل تصویر ====================
+        let puzzlePieces = [];
+        let puzzleEmptyIndex = 8;
+        let puzzleLevel = 1;
+        const puzzleImages = [
+            'https://i.ibb.co/r2TjrVXz/photo-2025-08-01-00-40-14.jpg',
+            'https://i.ibb.co/0jQ5Y7y/coffee-puzzle.jpg',
+            'https://i.ibb.co/7QZ1L3G/cafe-puzzle.jpg'
+        ];
+
+        function openPuzzleGame() {
+            closeModal('gameSelectionModal');
+            document.getElementById('puzzleGameModal').style.display = 'flex';
+            initPuzzleGame();
+        }
+
+        function initPuzzleGame() {
+            const puzzleBoard = document.getElementById('puzzleBoard');
+            puzzleBoard.innerHTML = '';
+            
+            // انتخاب تصویر بر اساس سطح
+            const imageUrl = puzzleImages[Math.min(puzzleLevel - 1, puzzleImages.length - 1)];
+            
+            // ایجاد قطعات پازل
+            puzzlePieces = [];
+            for (let i = 0; i < 8; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.dataset.index = i;
+                piece.style.backgroundImage = `url(${imageUrl})`;
+                piece.style.backgroundSize = '300% 300%';
+                
+                // محاسبه موقعیت تصویر پس‌زمینه
+                const row = Math.floor(i / 3);
+                const col = i % 3;
+                piece.style.backgroundPosition = `-${col * 100}% -${row * 100}%`;
+                
+                piece.style.width = '100px';
+                piece.style.height = '100px';
+                piece.style.border = '2px solid #8B4513';
+                piece.style.cursor = 'pointer';
+                piece.addEventListener('click', movePuzzlePiece);
+                puzzleBoard.appendChild(piece);
+                puzzlePieces.push(piece);
+            }
+            
+            // افزودن خانه خالی
+            const emptyPiece = document.createElement('div');
+            emptyPiece.className = 'puzzle-empty';
+            emptyPiece.style.width = '100px';
+            emptyPiece.style.height = '100px';
+            emptyPiece.style.backgroundColor = '#f0f0f0';
+            puzzleBoard.appendChild(emptyPiece);
+            puzzleEmptyIndex = 8;
+            
+            // نمایش سطح فعلی
+            document.getElementById('puzzleLevel').textContent = puzzleLevel;
+            
+            // به هم ریختن پازل
+            shufflePuzzle();
+        }
+
+        function shufflePuzzle() {
+            // انجام 100 حرکت تصادفی برای به هم ریختن پازل
+            for (let i = 0; i < 100; i++) {
+                const possibleMoves = [];
+                const emptyRow = Math.floor(puzzleEmptyIndex / 3);
+                const emptyCol = puzzleEmptyIndex % 3;
+                
+                // بررسی حرکت‌های ممکن
+                if (emptyRow > 0) possibleMoves.push(puzzleEmptyIndex - 3); // بالا
+                if (emptyRow < 2) possibleMoves.push(puzzleEmptyIndex + 3); // پایین
+                if (emptyCol > 0) possibleMoves.push(puzzleEmptyIndex - 1); // چپ
+                if (emptyCol < 2) possibleMoves.push(puzzleEmptyIndex + 1); // راست
+                
+                // انتخاب یک حرکت تصادفی
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                swapPuzzlePieces(randomMove, puzzleEmptyIndex);
+                puzzleEmptyIndex = randomMove;
+            }
+        }
+
+        function movePuzzlePiece() {
+            const clickedIndex = parseInt(this.dataset.index);
+            const emptyRow = Math.floor(puzzleEmptyIndex / 3);
+            const emptyCol = puzzleEmptyIndex % 3;
+            const clickedRow = Math.floor(clickedIndex / 3);
+            const clickedCol = clickedIndex % 3;
+            
+            // بررسی امکان حرکت (فقط قطعات مجاور خانه خالی می‌توانند حرکت کنند)
+            if (
+                (Math.abs(emptyRow - clickedRow) === 1 && emptyCol === clickedCol) ||
+                (Math.abs(emptyCol - clickedCol) === 1 && emptyRow === clickedRow)
+            ) {
+                swapPuzzlePieces(clickedIndex, puzzleEmptyIndex);
+                puzzleEmptyIndex = clickedIndex;
+                
+                // بررسی کامل شدن پازل
+                if (checkPuzzleSolved()) {
+                    setTimeout(() => {
+                        if (puzzleLevel < 3) {
+                            puzzleLevel++;
+                            alert(`تبریک! شما سطح ${puzzleLevel-1} را کامل کردید. آماده سطح بعدی هستید؟`);
+                            initPuzzleGame();
+                        } else {
+                            alert('تبریک! شما همه سطوح را کامل کردید!');
+                            puzzleLevel = 1;
+                            initPuzzleGame();
+                        }
+                    }, 300);
+                }
+            }
+        }
+
+        function swapPuzzlePieces(index1, index2) {
+            const puzzleBoard = document.getElementById('puzzleBoard');
+            
+            if (index1 === index2) return;
+            
+            // اگر یکی از خانه‌ها خالی باشد، فقط جای آن‌ها را عوض می‌کنیم
+            if (index1 === puzzleEmptyIndex) {
+                const temp = puzzlePieces[index2].style.order;
+                puzzlePieces[index2].style.order = '';
+                puzzleBoard.children[index1].style.order = temp;
+            } else if (index2 === puzzleEmptyIndex) {
+                const temp = puzzlePieces[index1].style.order;
+                puzzlePieces[index1].style.order = '';
+                puzzleBoard.children[index2].style.order = temp;
+            }
+        }
+
+        function checkPuzzleSolved() {
+            for (let i = 0; i < puzzlePieces.length; i++) {
+                if (parseInt(puzzlePieces[i].style.order || i) !== i) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function resetPuzzleGame() {
+            puzzleLevel = 1;
+            initPuzzleGame();
+        }
+
+        // ==================== رویدادهای کلی ====================
+        // کنترل با کیبورد برای بازی مار
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('snakeGameModal').style.display === 'flex') {
                 switch(e.key) {
                     case 'ArrowUp':
-                        if (yVelocity !== 1) {
-                            xVelocity = 0;
-                            yVelocity = -1;
+                        if (snakeYVelocity !== 1) {
+                            snakeXVelocity = 0;
+                            snakeYVelocity = -1;
                         }
                         break;
                     case 'ArrowDown':
-                        if (yVelocity !== -1) {
-                            xVelocity = 0;
-                            yVelocity = 1;
+                        if (snakeYVelocity !== -1) {
+                            snakeXVelocity = 0;
+                            snakeYVelocity = 1;
                         }
                         break;
                     case 'ArrowLeft':
-                        if (xVelocity !== 1) {
-                            xVelocity = -1;
-                            yVelocity = 0;
+                        if (snakeXVelocity !== 1) {
+                            snakeXVelocity = -1;
+                            snakeYVelocity = 0;
                         }
                         break;
                     case 'ArrowRight':
-                        if (xVelocity !== -1) {
-                            xVelocity = 1;
-                            yVelocity = 0;
+                        if (snakeXVelocity !== -1) {
+                            snakeXVelocity = 1;
+                            snakeYVelocity = 0;
                         }
                         break;
                 }
-            });
-            // کنترل با swipe در موبایل
-            canvas.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                e.preventDefault();
-            }, {passive: false});
+            }
+        });
 
-            canvas.addEventListener('touchmove', (e) => {
-                if (!touchStartX || !touchStartY) return;
-
-                const touchEndX = e.touches[0].clientX;
-                const touchEndY = e.touches[0].clientY;
-
-                const diffX = touchStartX - touchEndX;
-                const diffY = touchStartY - touchEndY;
-
-                // تشخیص جهت swipe
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    // حرکت افقی
-                    if (diffX > 0 && xVelocity !== 1) {
-                        // چپ
-                        xVelocity = -1;
-                        yVelocity = 0;
-                    } else if (diffX < 0 && xVelocity !== -1) {
-                        // راست
-                        xVelocity = 1;
-                        yVelocity = 0;
-                    }
-                } else {
-                    // حرکت عمودی
-                    if (diffY > 0 && yVelocity !== 1) {
-                        // بالا
-                        xVelocity = 0;
-                        yVelocity = -1;
-                    } else if (diffY < 0 && yVelocity !== -1) {
-                        // پایین
-                        xVelocity = 0;
-                        yVelocity = 1;
-                    }
-                }
-
-                touchStartX = 0;
-                touchStartY = 0;
-                e.preventDefault();
-            }, {passive: false});
-
-            // شروع بازی
-            score = 0;
-            scoreElement.textContent = score;
-            snake = [{x: Math.floor(tileCount/2), y: Math.floor(tileCount/2)}];
-            xVelocity = 0;
-            yVelocity = 0;
-
-            drawGame();
-            gameInterval = setInterval(updateGame, 150);
-        }
+        // تنظیم مجدد Canvas هنگام تغییر سایز پنجره
+        window.addEventListener('resize', function() {
+            if (document.getElementById('snakeGameModal').style.display === 'flex') {
+                resizeSnakeCanvas();
+                const canvas = document.getElementById('snakeCanvas');
+                snakeTileCount = Math.floor(canvas.width / snakeGridSize);
+            }
+        });
     </script>
 </body>
-</html>
+                </html>
+        
